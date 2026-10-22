@@ -1,1 +1,1 @@
-# chuch-vote
+# church-vote
