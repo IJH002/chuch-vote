@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>&#51076;&#50896; &#49440;&#44144;</title>
+<style>
+:root{--navy:#1B3F7A;--gold:#B8962E;--red:#8B1A1A;--green:#1A5C2A;--border:#D5C9B0;--gray:#777;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Malgun Gothic','Apple SD Gothic Neo',Arial,sans-serif;background:linear-gradient(180deg,#EDE6D6,#F5F0E8,#EDE6D6);min-height:100vh;display:flex;justify-content:center;padding:20px 14px;}
+.card{background:#fff;border-radius:20px;padding:30px 24px;max-width:440px;width:100%;box-shadow:0 4px 0 var(--gold),0 8px 28px rgba(27,63,122,.12);margin:auto;position:relative;border-top:4px solid var(--gold);}
+.cross{color:var(--navy);font-size:26px;text-align:center;margin-bottom:2px;letter-spacing:1px;}
+.motto{color:var(--gold);font-size:12px;text-align:center;letter-spacing:3px;margin-bottom:18px;}
+.screen{display:none;}.screen.active{display:block;}
+h2{color:var(--navy);font-size:19px;text-align:center;margin-bottom:10px;}
+.sub{color:var(--gray);font-size:13px;text-align:center;line-height:1.7;margin-bottom:14px;}
+.info-box{background:#F8F4EC;border:1px solid var(--border);border-radius:10px;padding:13px;font-size:13px;color:#555;line-height:1.9;margin-bottom:16px;}
+.btn{width:100%;padding:13px;border:none;border-radius:10px;font-size:15px;font-weight:bold;font-family:inherit;cursor:pointer;margin-top:8px;display:block;letter-spacing:.5px;}
+.btn:hover{opacity:.84;}
+.btn-navy{background:var(--navy);color:#fff;}.btn-purple{background:#5A52C8;color:#fff;}.btn-green{background:var(--green);color:#fff;}.btn-orange{background:#B85010;color:#fff;}.btn-dark{background:#333;color:#fff;}.btn-out{background:#fff;color:var(--navy);border:2px solid var(--navy);}
+.cand{background:#F8F4EC;border:2px solid var(--border);border-radius:12px;padding:17px;font-size:17px;font-weight:bold;font-family:inherit;color:#1A1A2E;cursor:pointer;width:100%;display:block;text-align:center;margin-bottom:10px;}
+.cand:hover{border-color:var(--gold);}.cand.sel{background:var(--navy);border-color:var(--navy);color:#fff;}
+.badge-wrap{text-align:center;margin-bottom:8px;}
+.badge{background:var(--navy);color:#fff;border-radius:20px;padding:3px 16px;font-size:12px;display:inline-block;}
+.rv-badge{background:var(--red);color:#fff;border-radius:20px;padding:3px 12px;font-size:11px;display:inline-block;margin-left:6px;}
+.name-gold{color:var(--gold);font-size:21px;font-weight:bold;text-align:center;margin-bottom:12px;}
+.tie-notice{background:#FDE8E8;border:2px solid #C08080;border-radius:10px;padding:11px;text-align:center;color:var(--red);font-size:13px;font-weight:bold;margin-bottom:12px;}
+.ok-msg{color:var(--green);font-size:14px;text-align:center;font-weight:bold;margin:10px 0;}
+.wait-box{background:#FFF8E6;border:2px dashed var(--gold);border-radius:12px;padding:18px;text-align:center;margin:12px 0;}
+.wait-box .wt{color:#8B6914;font-size:14px;font-weight:bold;}
+.spin{display:inline-block;animation:sp 1.2s linear infinite;font-size:24px;}
+@keyframes sp{to{transform:rotate(360deg)}}
+.err-msg{color:var(--red);font-size:13px;min-height:16px;text-align:center;margin-bottom:6px;}
+input[type=password]{width:100%;padding:12px 14px;border:2px solid var(--border);border-radius:9px;font-size:15px;font-family:inherit;background:#FDFAF5;outline:none;margin-bottom:8px;}
+input:focus{border-color:var(--navy);}
+.adm-btn{position:absolute;top:14px;right:14px;background:#EDE6D6;color:#666;border:none;border-radius:20px;padding:5px 12px;font-size:11px;cursor:pointer;font-family:inherit;}
+hr{border:none;border-top:1px solid var(--border);margin:12px 0;}
+.stag{display:inline-block;padding:3px 12px;border-radius:10px;font-size:11px;font-weight:bold;margin-bottom:6px;}
+.tw{background:#FFF8E6;color:#8B6914;border:1px solid #D4A030;}.to{background:#E6F0E6;color:#1A5C2A;border:1px solid #5C9C5C;}.tc{background:#FDE8E8;color:var(--red);border:1px solid #C08080;}.tr{background:#E6EAF8;color:#1B4080;border:1px solid #8090C0;}.td2{background:#E6F0E6;color:#1A5C2A;border:1px solid #5C9C5C;}
+.live-row{font-size:13px;padding:5px 0;border-bottom:1px solid #F0EBE0;display:flex;justify-content:space-between;}
+.live-row b{color:var(--navy);}
+.winner-table{width:100%;border-collapse:collapse;margin-top:10px;}
+.winner-table th{background:var(--navy);color:#fff;padding:9px 12px;font-size:13px;}
+.winner-table td{padding:9px 12px;border-bottom:1px solid #EDE8E0;font-size:14px;}
+.winner-table tr:nth-child(even) td{background:#F8F5EE;}
+.wt-pos{color:#888;text-align:center;}.wt-name{color:var(--navy);font-weight:bold;text-align:center;}
+.done-icon{font-size:44px;text-align:center;margin:12px 0;}
+.divider{text-align:center;color:var(--gold);letter-spacing:6px;margin:6px 0;font-size:12px;}
+.leg-item{display:flex;align-items:center;margin-bottom:7px;font-size:13px;}
+.leg-dot{width:12px;height:12px;border-radius:50%;margin-right:8px;flex-shrink:0;}
+.leg-pct{margin-left:auto;font-weight:bold;color:var(--navy);}
+canvas{display:block;margin:0 auto;}
+</style>
+</head>
+<body>
+
+<!-- &#48724;&#54532;&#47196;&#51229;&#53552; HTML &#53596;&#54540;&#47551; -->
+<textarea id="btpl" style="display:none"><!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>&#44060;&#54364; &#44208;&#44284;</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Malgun Gothic","Apple SD Gothic Neo",Arial,sans-serif;background:linear-gradient(135deg,#0A1628 0%,#0D2045 60%,#0A1628 100%);color:#F5F1E8;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 20px;text-align:center}
+h1{font-size:clamp(22px,4vw,54px);color:#C9A030;margin-bottom:12px;letter-spacing:2px}
+h2{font-size:clamp(16px,3vw,38px);color:#E8DFC8;margin-bottom:10px}
+.bdg{display:inline-block;background:rgba(201,160,48,.18);color:#C9A030;border:1px solid #C9A030;border-radius:20px;padding:5px 22px;font-size:clamp(12px,1.8vw,20px);margin-bottom:14px}
+.wl{font-size:clamp(12px,1.5vw,20px);color:#7A8FA6;margin-bottom:4px}
+.wn{font-size:clamp(30px,6vw,84px);font-weight:bold;color:#C9A030;text-shadow:0 0 40px rgba(201,160,48,.5);margin:6px 0;line-height:1.1}
+.ws{font-size:clamp(12px,1.5vw,18px);color:#93a1ff;margin-top:6px}
+.tot{font-size:clamp(13px,1.6vw,20px);color:#445;margin-bottom:16px;margin-top:6px}
+canvas{display:block;margin:0 auto}
+.leg{margin-top:18px;max-width:500px;width:100%}
+.li{display:flex;align-items:center;margin-bottom:11px;font-size:clamp(14px,2.2vw,28px)}
+.dot{width:20px;height:20px;border-radius:50%;margin-right:12px;flex-shrink:0}
+.pct{margin-left:auto;font-weight:bold;color:#C9A030;font-size:clamp(15px,2.5vw,30px)}
+.wi{font-size:clamp(60px,10vw,130px);margin:16px 0}
+.wm{font-size:clamp(20px,3.5vw,48px);color:#3A5070;font-weight:bold}
+.ws2{font-size:clamp(13px,2vw,26px);color:#3A5070;margin-top:8px}
+.ft{width:100%;max-width:700px;border-collapse:collapse;margin-top:16px}
+.ft th{background:rgba(201,160,48,.2);color:#C9A030;border-bottom:2px solid #C9A030;padding:16px 22px;font-size:clamp(14px,2.2vw,26px)}
+.ft td{padding:14px 22px;border-bottom:1px solid #1A2F50}
+.ftd{color:#7A8FA6;text-align:center;font-size:clamp(13px,2vw,22px)!important}
+.fwd{color:#C9A030;font-weight:bold;text-align:center;font-size:clamp(18px,2.8vw,34px)!important}
+.dh{font-size:clamp(28px,5vw,66px);color:#C9A030;margin-bottom:8px}
+.rbtn{position:fixed;bottom:16px;right:16px;background:rgba(255,255,255,.07);color:#556;border:1px solid #333;border-radius:8px;padding:8px 14px;cursor:pointer;font-size:12px;font-family:inherit}
+</style>
+</head>
+<body>
+<div id="ct"><div class="wi">&#9203;</div><div class="wm">&#50672;&#44208; &#51473;...</div></div>
+<button class="rbtn" onclick="location.reload()">&#49352;&#47196;&#44256;&#52840;</button>
+<script>
+var R = __ROUNDS__;
+var DB = "__DBURL__";
+var CL = ["#1B3F7A","#B8962E","#8B3A3A","#2A7A5A","#6B4A9B","#8B6020"];
+function jget(p){ return fetch(DB + '/' + p + '.json', {cache:'no-store'}).then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); }); }
+function vk(id,rv){return id+(rv>0?"_rv"+rv:"");}
+function gc(r,st){var rv=st.revote||0;return(rv>0&&st.tied)?st.tied:r.c;}
+function calcV(r,st,votes){
+  var ca=gc(r,st);var cnt={};
+  for(var i=0;i<ca.length;i++) cnt[ca[i]]=0;
+  var ks=Object.keys(votes||{});
+  for(var i=0;i<ks.length;i++){var v=votes[ks[i]];if(cnt[v]!==undefined)cnt[v]++;}
+  var total=ks.length;
+  var sorted=Object.keys(cnt).map(function(k){return[k,cnt[k]];});
+  sorted.sort(function(a,b){return b[1]-a[1];});
+  var tie=sorted.length>1&&sorted[0][1]===sorted[1][1];
+  return{total:total,sorted:sorted,tie:tie};
+}
+function wTxt(r,d,st){
+  if(r.single){
+    var yes=0; for(var i=0;i<d.sorted.length;i++){ if(d.sorted[i][0]==="\ucc2c\uc131") yes=d.sorted[i][1]; }
+    var no=d.total-yes;
+    if(yes===no) return "\ub3d9\uc810";
+    return yes>no?"\uac00\uacb0":"\ubd80\uacb0";
+  }
+  if(d.tie) return d.sorted[0][0]+" / "+d.sorted[1][0]+" (\ub3d9\uc810)";
+  return d.sorted[0][0];
+}
+function pie(cvs,sorted,total){
+  var ctx=cvs.getContext("2d");var s=cvs.width;
+  var cx=s/2,cy=s/2,rad=s*0.42;ctx.clearRect(0,0,s,s);var start=-Math.PI/2;
+  for(var i=0;i<sorted.length;i++){
+    var cnt=sorted[i][1];
+    var slice=total>0?(cnt/total)*Math.PI*2:Math.PI*2/sorted.length;
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,rad,start,start+slice);
+    ctx.fillStyle=CL[i%CL.length];ctx.fill();ctx.strokeStyle="#0A1628";ctx.lineWidth=4;ctx.stroke();
+    if(total>0&&cnt>0){
+      var mid=start+slice/2;
+      var tx=cx+Math.cos(mid)*rad*0.63,ty=cy+Math.sin(mid)*rad*0.63;
+      ctx.fillStyle="#fff";ctx.font="bold "+Math.max(14,Math.floor(rad*0.19))+"px Malgun Gothic,Arial,sans-serif";
+      ctx.textAlign="center";ctx.textBaseline="middle";
+      ctx.fillText(Math.round(cnt/total*100)+"%",tx,ty);
+    }
+    start+=slice;
+  }
+}
+function render(st,votes){
+  var ct=document.getElementById("ct");
+  if(!st){ct.innerHTML='<div class="wi">&#9203;</div><div class="wm">\uc900\ube44 \uc911</div>';return;}
+  var round=st.round,phase=st.phase,rv=st.revote||0,winners=st.winners||[];
+  if(phase==="done"){
+    var rows="";
+    for(var i=0;i<R.length;i++){var w=winners[i]||{winner:"-"};rows+="<tr><td class='ftd'>"+R[i].title+"</td><td class='fwd'>"+w.winner+"</td></tr>";}
+    ct.innerHTML="<div class='dh'>&#127881;&#127881; \ucd5c\uc885 \uc120\uac70 \uacb0\uacfc &#127881;&#127881;</div><p style='color:#7A8FA6;font-size:clamp(13px,2vw,22px);margin-bottom:16px'>\ubaa8\ub4e0 \uc120\uac70\uac00 \uc644\ub8cc\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \ud558\ub098\ub2d8\uaed8 \uac10\uc0ac\ub4dc\ub9bd\ub2c8\ub2e4!</p><table class='ft'><thead><tr><th>\uc9c1\ucc45</th><th>\uacb0\uacfc</th></tr></thead><tbody>"+rows+"</tbody></table>";
+    return;
+  }
+  var r=R[round];
+  var bdg="<div class='bdg'>"+(round+1)+"/"+R.length+"\ucc28 &mdash; "+r.title+(rv>0?" (\uc7ac\ud22c\ud45c "+rv+"\ucc28)":"")+"</div>";
+  if(phase==="waiting"||!phase){ct.innerHTML="<h1>&#10013; \uc784\uc6d0 \uc120\uac70</h1>"+bdg+"<div class='wi'>&#9203;</div><div class='wm'>"+(rv>0?"\uc7ac\ud22c\ud45c \uc900\ube44 \uc911":"\ud22c\ud45c \uc900\ube44 \uc911")+"</div><div class='ws2'>\uad00\ub9ac\uc790\uac00 \uc2dc\uc791\ud560 \ub54c\uae4c\uc9c0 \uae30\ub2e4\ub824\uc8fc\uc138\uc694</div>";return;}
+  if(phase==="open"){ct.innerHTML="<h1>&#10013; \uc784\uc6d0 \uc120\uac70</h1>"+bdg+"<div class='wi'>&#128499;</div><div class='wm'>\ud22c\ud45c \uc9c4\ud589 \uc911</div><div class='ws2'>\ud22c\ud45c\uac00 \uc644\ub8cc\ub418\uba74 \uacb0\uacfc\ub97c \uacf5\uac1c\ud569\ub2c8\ub2e4</div>";return;}
+  if(phase==="closed"){ct.innerHTML="<h1>&#10013; \uc784\uc6d0 \uc120\uac70</h1>"+bdg+"<div class='wi'>&#128274;</div><div class='wm'>\uac1c\ud45c \uc911...</div><div class='ws2'>\uc7a0\uc2dc \ud6c4 \uacb0\uacfc\uac00 \uacf5\uac1c\ub429\ub2c8\ub2e4</div>";return;}
+  if(phase==="results"&&votes){
+    var d=calcV(r,st,votes);var sorted=d.sorted;var total=d.total;
+    var wtxt=wTxt(r,d,st);var isSingle=r.single;
+    var titleText=isSingle?r.title+": "+r.name+(rv>0?" (\uc7ac\ud22c\ud45c)":""):r.title+(rv>0?" \uc7ac\ud22c\ud45c":" \uc120\ucd9c");
+    var wLabel=isSingle?"\uacb0\uacfc":"\ub2f9\uc120\uc790";
+    var wSub=d.tie?"&#9888; \ub3d9\uc810":"";
+    var sz=Math.min(Math.floor(window.innerWidth*0.5),400);
+    ct.innerHTML="<h1>&#128202; \uac1c\ud45c \uacb0\uacfc</h1>"+bdg+"<h2>"+titleText+"</h2><div class='wl'>"+wLabel+"</div><div class='wn'>"+wtxt+"</div>"+(wSub?"<div class='ws'>"+wSub+"</div>":"")+"<div class='tot'>\ucd1d "+total+"\ud45c</div><canvas id='dpie' width='"+sz+"' height='"+sz+"'></canvas><div class='leg' id='dleg'></div>";
+    var cvs=document.getElementById("dpie");if(cvs)pie(cvs,sorted,total);
+    var lg=document.getElementById("dleg");
+    if(lg){for(var i=0;i<sorted.length;i++){var pct=total>0?Math.round(sorted[i][1]/total*100):0;lg.innerHTML+="<div class='li'><div class='dot' style='background:"+CL[i%CL.length]+"'></div>"+sorted[i][0]+" "+sorted[i][1]+"\ud45c<span class='pct'>"+pct+"%</span></div>";}}
+  }
+}
+var _lastBeamSig = null, _bBusy = false;
+function tick(){
+  if(_bBusy) return; _bBusy = true;
+  jget("state").then(function(st){
+    if(!st){ _bBusy=false; if(_lastBeamSig!=="none"){_lastBeamSig="none"; render(null,null);} return; }
+    var sig = st.round+"|"+st.phase+"|"+(st.revote||0);
+    if(st.phase==="results" && R[st.round]){
+      var r=R[st.round];
+      return jget("votes/"+vk(r.id,st.revote||0)).then(function(v){
+        _bBusy=false;
+        var d=calcV(r,st,v||{});
+        var full = sig+"|"+JSON.stringify(d.sorted);
+        if(full!==_lastBeamSig){ _lastBeamSig=full; render(st,v||{}); }
+      });
+    }
+    _bBusy=false;
+    var full2 = sig+(st.phase==="done"?"|"+JSON.stringify(st.winners||[]):"");
+    if(full2!==_lastBeamSig){ _lastBeamSig=full2; render(st,null); }
+  }).catch(function(e){ _bBusy=false; });
+}
+tick();
+setInterval(tick, 1000);
+</script>
+</body>
+</html></textarea>
+
+<div class="card">
+<button class="adm-btn" onclick="goAdmin()">&#9881; &#44288;&#47532;&#51088;</button>
+
+<div id="s-enter" class="screen active">
+  <div class="cross">&#10013; &#51076;&#50896; &#49440;&#44144;</div>
+  <div class="motto">&#8213; &#54616;&#45208;&#45784;&#51032; &#51008;&#54812;&#47196; &#8213;</div>
+  <div class="info-box">
+    &#10004; &#50756;&#51204; &#51061;&#47749; &#53804;&#54364;&#51077;&#45768;&#45796;<br>
+    &#10004; &#44592;&#44592;&#45817; 1&#54924;&#47564; &#53804;&#54364; &#44032;&#45733;&#54633;&#45768;&#45796;<br>
+    &#10004; 7&#44060; &#54637;&#47785; &#49692;&#49436;&#45824;&#47196; &#51652;&#54665;&#46121;&#45768;&#45796;<br>
+    &#10004; &#46041;&#51216; &#49884; &#54644;&#45817; &#54637;&#47785;&#47564; &#51116;&#53804;&#54364;&#54633;&#45768;&#45796;
+  </div>
+  <button class="btn btn-navy" onclick="enter()">&#53804;&#54364; &#52280;&#50668;&#54616;&#44592;</button>
+</div>
+
+<div id="s-wait" class="screen">
+  <h2 id="wt-title">&#51104;&#49884; &#44592;&#45796;&#47140;&#51452;&#49464;&#50836;</h2>
+  <div style="font-size:46px;text-align:center;margin:16px 0;">&#9203;</div>
+  <p class="sub" id="wt-msg">&#44288;&#47532;&#51088;&#44032; &#53804;&#54364;&#47484; &#49884;&#51089;&#54624; &#46412;&#44620;&#51648; &#51060; &#54868;&#47732;&#51012; &#50976;&#51648;&#54644;&#51452;&#49464;&#50836;.</p>
+</div>
+
+<div id="s-vote" class="screen">
+  <div class="badge-wrap">
+    <span class="badge" id="v-badge">1 / 7</span>
+    <span class="rv-badge" id="v-rv" style="display:none">&#51116;&#53804;&#54364;</span>
+  </div>
+  <h2 id="v-title"></h2>
+  <div class="name-gold" id="v-name" style="display:none"></div>
+  <div class="tie-notice" id="v-tie" style="display:none">&#9888; &#46041;&#51216;&#51004;&#47196; &#51064;&#54620; &#51116;&#53804;&#54364;&#51077;&#45768;&#45796;</div>
+  <p class="sub" id="v-guide">&#49440;&#53469; &#54980; &#53804;&#54364; &#48260;&#53948;&#51012; &#45572;&#47476;&#49464;&#50836;</p>
+  <div id="v-cands"></div>
+  <p class="err-msg" id="v-err"></p>
+  <button class="btn btn-navy" onclick="submitVote()">&#53804;&#54364;&#54616;&#44592;</button>
+</div>
+
+<div id="s-voted" class="screen">
+  <div class="badge-wrap">
+    <span class="badge" id="vd-badge">1 / 7</span>
+    <span class="rv-badge" id="vd-rv" style="display:none">&#51116;&#53804;&#54364;</span>
+  </div>
+  <h2 id="vd-title">&#53804;&#54364; &#50756;&#47308;</h2>
+  <p class="ok-msg" id="vd-ok">&#10003; &#51061;&#47749; &#53804;&#54364; &#51217;&#49688; &#50756;&#47308;</p>
+  <div class="wait-box"><div class="wt" id="vd-msg">&#44060;&#54364; &#51652;&#54665; &#51473;&#51077;&#45768;&#45796;...</div></div>
+  <div style="text-align:center;margin-top:14px;"><span class="spin">&#10227;</span></div>
+</div>
+
+<div id="s-done" class="screen">
+  <div class="cross">&#10013; &#49440;&#44144; &#50756;&#47308;</div>
+  <div class="divider">&#10022; &#10022; &#10022;</div>
+  <div class="done-icon">&#127881;&#127881;&#127881;</div>
+  <p class="sub" style="margin-bottom:14px;">&#49440;&#44144;&#44032; &#50756;&#47308;&#46104;&#50632;&#49845;&#45768;&#45796;.<br>&#52280;&#50668;&#50640; &#44048;&#49324;&#46300;&#47549;&#45768;&#45796;.</p>
+</div>
+
+<div id="s-admin" class="screen">
+  <div class="cross">&#9881; &#44288;&#47532;&#51088; &#54056;&#45328;</div>
+  <div id="adm-login" style="margin-top:14px;">
+    <input type="password" id="adm-pw" placeholder="&#44288;&#47532;&#51088; &#48708;&#48128;&#48264;&#54840;" onkeydown="if(event.key==='Enter')adminLogin()">
+    <p class="err-msg" id="adm-err"></p>
+    <button class="btn btn-navy" onclick="adminLogin()">&#47196;&#44536;&#51064;</button>
+    <button class="btn btn-out" style="margin-top:6px;" onclick="exitAdmin()">&#52712;&#49548;</button>
+  </div>
+  <div id="adm-panel" style="display:none;">
+    <div style="text-align:center;margin-bottom:10px;">
+      <span class="stag" id="adm-stag">-</span><br>
+      <strong id="adm-rtitle" style="font-size:15px;color:#1B3F7A;">-</strong><br>
+      <span id="adm-rinfo" style="font-size:12px;color:#888;"></span><br>
+      <span id="adm-rvinfo" style="font-size:11px;color:#8B1A1A;display:none;"></span>
+    </div>
+    <div id="adm-live" style="margin-bottom:8px;"></div>
+    <div id="adm-chart" style="display:none;text-align:center;">
+      <canvas id="adm-pie" width="190" height="190"></canvas>
+      <div id="adm-leg" style="margin-top:6px;text-align:left;"></div>
+      <p id="adm-wtext" style="text-align:center;font-weight:bold;color:#1B3F7A;margin-top:6px;font-size:14px;"></p>
+      <div id="adm-tie" style="display:none;" class="tie-notice">&#9888; &#46041;&#51216; &mdash; &#51116;&#53804;&#54364; &#48260;&#53948;&#51012; &#45580;&#47084;&#51452;&#49464;&#50836;</div>
+    </div>
+    <hr>
+    <button class="btn btn-navy"   id="btn-open"    onclick="aOpen()"    style="display:none;margin-bottom:6px;">&#9654; &#53804;&#54364; &#50676;&#44592;</button>
+    <button class="btn btn-purple" id="btn-close"   onclick="aClose()"   style="display:none;margin-bottom:6px;">&#128274; &#53804;&#54364; &#47560;&#44048;</button>
+    <button class="btn btn-green"  id="btn-reveal"  onclick="aReveal()"  style="display:none;margin-bottom:6px;">&#128226; &#44208;&#44284; &#44277;&#44060; + &#48724; &#51204;&#49569;</button>
+    <button class="btn btn-navy"   id="btn-display" onclick="openBeam()" style="display:none;margin-bottom:6px;">&#128250; &#48724;&#54532;&#47196;&#51229;&#53552; &#54868;&#47732; &#50676;&#44592;</button>
+    <button class="btn btn-orange" id="btn-revote"  onclick="aRevote()"  style="display:none;margin-bottom:6px;">&#128260; &#46041;&#51216; &#51116;&#53804;&#54364; &#51652;&#54665;</button>
+    <button class="btn btn-orange" id="btn-reject-revote" onclick="aRejectRevote()" style="display:none;margin-bottom:6px;">&#128260; &#48512;&#44208; &#51116;&#53804;&#54364; &#51652;&#54665;</button>
+    <button class="btn btn-purple" id="btn-next"    onclick="aNext()"    style="display:none;margin-bottom:6px;">&#45796;&#51020; &#53804;&#54364;&#47196; &#9654;</button>
+    <button class="btn btn-navy"   id="btn-end"     onclick="aEnd()"     style="display:none;margin-bottom:6px;">&#49440;&#44144; &#51333;&#47308; &#10003;</button>
+    <hr>
+    <button class="btn btn-dark"   id="btn-reset"   onclick="aReset()"   style="display:none;margin-bottom:6px;">&#8635; &#52376;&#51020;&#48512;&#53552; &#45796;&#49884; &#49884;&#51089;</button>
+    <button class="btn btn-out" onclick="exitAdmin()" style="margin-top:4px;">&#45208;&#44032;&#44592;</button>
+  </div>
+</div>
+</div>
+
+<script>
+var DB = "https://church-vote-bb255-default-rtdb.firebaseio.com";
+
+var ROUNDS = [
+  {id:'r1',title:'\ud68c\uc7a5',    single:true,  name:'95 \uae40\ucc2c\ubbf8',           c:['\ucc2c\uc131','\ubbf8\ucc2c\uc131']},
+  {id:'r2',title:'\ub0a8\ubd80\ud68c\uc7a5',single:false, c:['95 \uae40\uad00\uc12d','95 \uae40\uc7ac\uc131']},
+  {id:'r3',title:'\uc5ec\ubd80\ud68c\uc7a5',single:false, c:['97 \uc774\ud6a8\uc740','98 \uc7a5\uc608\uc9c4']},
+  {id:'r4',title:'\ucd1d\ubb34',    single:true,  name:'98 \uc774\uc815\uc6b0',            c:['\ucc2c\uc131','\ubbf8\ucc2c\uc131']},
+  {id:'r5',title:'\ubd80\ucd1d\ubb34',  single:false, c:['99 \ubc15\uc900\uc601','00 \uac15\uc218\uc601']},
+  {id:'r6',title:'\uc11c\uae30',    single:false, c:['00 \uc624\uc608\uc11c','00 \uae40\uacb0\uc774']},
+  {id:'r7',title:'\ud68c\uacc4',    single:false, c:['96 \uae40\uc7ac\ub828','00 \uae40\uc138\uc740']}
+];
+var PW = '1234';
+var UK = 'vote_uid_2024';
+var COLORS = ['#1B3F7A','#B8962E','#8B3A3A','#2A7A5A','#6B4A9B','#8B6020'];
+
+var myUID = null, isAdmin = false, chosen = null, beamWin = null, pollTimer = null;
+var seq = 0;
+var inAction = false;
+function lockBtns(lock){
+  var ids=['btn-open','btn-close','btn-reveal','btn-display','btn-revote','btn-reject-revote','btn-next','btn-end','btn-reset'];
+  for(var i=0;i<ids.length;i++){ var b=el(ids[i]); if(b) b.disabled = lock; }
+}
+
+function withTimeout(p, ms){
+  return new Promise(function(res, rej){
+    var done=false; var tm=setTimeout(function(){ if(!done){ done=true; rej(new Error('timeout')); } }, ms);
+    p.then(function(v){ if(!done){ done=true; clearTimeout(tm); res(v); } }, function(e){ if(!done){ done=true; clearTimeout(tm); rej(e); } });
+  });
+}
+function req(p, opt){
+  opt = opt || {}; opt.cache = 'no-store';
+  return withTimeout(fetch(DB + '/' + p + '.json', opt), 8000).then(function(r){
+    if(!r.ok) throw new Error('HTTP ' + r.status);
+    return r.json();
+  });
+}
+function jget(p){ return req(p); }
+function jput(p, data){ return req(p, {method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)}); }
+function jpatch(p, data){ return req(p, {method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)}); }
+function jdel(p){ return req(p, {method:'DELETE'}); }
+
+var _uid = localStorage.getItem(UK);
+if (!_uid) { _uid = 'u' + Math.random().toString(36).slice(2) + Date.now().toString(36); localStorage.setItem(UK, _uid); }
+myUID = _uid;
+
+function el(id){ return document.getElementById(id); }
+function vis(id,v){ el(id).style.display = v ? 'block' : 'none'; }
+function show(id){ var all=document.querySelectorAll('.screen'); for(var i=0;i<all.length;i++) all[i].classList.remove('active'); el(id).classList.add('active'); }
+function vk(id,rv){ return id + (rv > 0 ? '_rv' + rv : ''); }
+function gc(r,st){ var rv=st.revote||0; return (rv>0&&st.tied)?st.tied:r.c; }
+function calcV(r,st,votes){
+  var ca=gc(r,st); var cnt={}; for(var i=0;i<ca.length;i++) cnt[ca[i]]=0;
+  var ks=Object.keys(votes||{});
+  for(var i=0;i<ks.length;i++){var v=votes[ks[i]];if(cnt[v]!==undefined)cnt[v]++;}
+  var total=ks.length;
+  var sorted=Object.keys(cnt).map(function(k){return[k,cnt[k]];});
+  sorted.sort(function(a,b){return b[1]-a[1];});
+  var tie=sorted.length>1&&sorted[0][1]===sorted[1][1];
+  return{total:total,sorted:sorted,tie:tie};
+}
+function winTxt(r,d,st){
+  if(r.single){
+    var yes=0; for(var i=0;i<d.sorted.length;i++){ if(d.sorted[i][0]==='\ucc2c\uc131') yes=d.sorted[i][1]; }
+    var no=d.total-yes;
+    if(yes===no) return '\ub3d9\uc810';
+    return yes>no?'\uac00\uacb0':'\ubd80\uacb0';
+  }
+  if(d.tie) return d.sorted[0][0]+' / '+d.sorted[1][0]+' (\ub3d9\uc810)';
+  return d.sorted[0][0];
+}
+
+function finalTxt(r,d,st){
+  var w=winTxt(r,d,st);
+  if(r.single && w==='\uac00\uacb0') return r.name;
+  return w;
+}
+
+function setPoll(ms){
+  if(pollTimer) clearInterval(pollTimer);
+  pollTimer = setInterval(function(){ if(!isAdmin) pollVoter(); }, ms);
+}
+function enter(){
+  show('s-wait');
+  el('wt-title').textContent = '\uc5f0\uacb0 \uc911...';
+  el('wt-msg').textContent = '\uc11c\ubc84\uc5d0 \uc5f0\uacb0 \uc911\uc785\ub2c8\ub2e4. \uc7a0\uc2dc \uae30\ub2e4\ub824\uc8fc\uc138\uc694.';
+  _lastVoterSig = null;
+  setPoll(3000 + Math.floor(Math.random()*1000));
+  pollVoter();
+}
+var _vBusy=false;
+function pollVoter(){
+  if(_vBusy) return; _vBusy=true;
+  jget('state').then(function(st){
+    _vBusy=false;
+    if(!isAdmin) renderVoter(st);
+  }).catch(function(){ _vBusy=false; /* \uc77c\uc2dc\uc801 \uc624\ub958\ub294 \ub2e4\uc74c \ud3f4\ub9c1\uc5d0\uc11c \uc790\ub3d9 \uc7ac\uc2dc\ub3c4 */ });
+}
+var _lastVoterSig = null;
+var _hasVotedCache = {};
+function renderVoter(st){
+  if(!st){ el('wt-title').textContent='\ub300\uae30 \uc911'; el('wt-msg').textContent='\uad00\ub9ac\uc790\uac00 \ud22c\ud45c\ub97c \uc2dc\uc791\ud560 \ub54c\uae4c\uc9c0 \uae30\ub2e4\ub824\uc8fc\uc138\uc694.'; show('s-wait'); return; }
+  if(st.round >= ROUNDS.length || st.phase==='done'){ doneScreen(st.winners||[]); return; }
+  if(st.phase==='waiting'){ setPoll(3000 + Math.floor(Math.random()*1000)); }
+  else { setPoll(1200 + Math.floor(Math.random()*400)); }
+  var round=st.round, phase=st.phase, rv=st.revote||0, r=ROUNDS[round];
+  if(!r){ doneScreen(st.winners||[]); return; }
+  var sig = round+'|'+phase+'|'+rv;
+  if(phase==='done'){ if(_lastVoterSig!==sig){ _lastVoterSig=sig; doneScreen(st.winners||[]); } return; }
+  if(phase==='waiting'){
+    if(_lastVoterSig!==sig){
+      _lastVoterSig=sig;
+      el('wt-title').textContent=rv>0?'\uc7ac\ud22c\ud45c \uc900\ube44 \uc911':r.title+' \ud22c\ud45c \uc900\ube44 \uc911';
+      el('wt-msg').textContent='\uad00\ub9ac\uc790\uac00 \ud22c\ud45c\ub97c \uc2dc\uc791\ud560 \ub54c\uae4c\uc9c0 \uc774 \ud654\uba74\uc744 \uc720\uc9c0\ud574\uc8fc\uc138\uc694.';
+      show('s-wait');
+    }
+    return;
+  }
+  if(phase==='open'){
+    var vkey = vk(r.id,rv);
+    if(_hasVotedCache[vkey]){ votedScreen(round,r.title,rv,'\ud22c\ud45c \uc644\ub8cc. \uac1c\ud45c\ub97c \uae30\ub2e4\ub9ac\ub294 \uc911...',true); return; }
+    if(_lastVoterSig===sig) return;
+    jget('votes/'+vkey+'/'+myUID).then(function(v){
+      if(v){ _hasVotedCache[vkey]=true; _lastVoterSig=sig; votedScreen(round,r.title,rv,'\ud22c\ud45c \uc644\ub8cc. \uac1c\ud45c\ub97c \uae30\ub2e4\ub9ac\ub294 \uc911...',true); }
+      else { _lastVoterSig=sig; voteScreen(round,r,st); }
+    });
+    return;
+  }
+  if(_lastVoterSig!==sig){
+    _lastVoterSig=sig;
+    votedScreen(round,r.title,rv,'\uac1c\ud45c \uc9c4\ud589 \uc911\uc785\ub2c8\ub2e4...',false);
+  }
+}
+function votedScreen(round,title,rv,msg,ok){
+  el('vd-badge').textContent=(round+1)+' / '+ROUNDS.length;
+  el('vd-title').textContent=title;
+  el('vd-msg').textContent=msg;
+  el('vd-ok').style.display=ok?'block':'none';
+  el('vd-rv').style.display=rv>0?'inline-block':'none';
+  if(rv>0) el('vd-rv').textContent='\uc7ac\ud22c\ud45c '+rv+'\ucc28';
+  show('s-voted');
+}
+function doneScreen(winners){
+  show('s-done');
+}
+function voteScreen(round,r,st){
+  chosen=null; var rv=st.revote||0;
+  el('v-badge').textContent=(round+1)+' / '+ROUNDS.length;
+  el('v-rv').style.display=rv>0?'inline-block':'none'; if(rv>0) el('v-rv').textContent='\uc7ac\ud22c\ud45c '+rv+'\ucc28';
+  el('v-tie').style.display=rv>0?'block':'none';
+  if(rv>0) el('v-tie').textContent='\u26a0 '+(st.revoteType==='reject'?'\ubd80\uacb0\ub85c \uc778\ud55c \uc7ac\ud22c\ud45c\uc785\ub2c8\ub2e4':'\ub3d9\uc810\uc73c\ub85c \uc778\ud55c \uc7ac\ud22c\ud45c\uc785\ub2c8\ub2e4');
+  if(r.single){ el('v-title').textContent=r.title; el('v-name').textContent=r.name; el('v-name').style.display='block'; el('v-guide').textContent='\ucc2c\uc131 \ub610\ub294 \ubbf8\ucc2c\uc131\uc744 \uc120\ud0dd\ud574\uc8fc\uc138\uc694'; }
+  else { el('v-title').textContent=r.title+(rv>0?' \uc7ac\ud22c\ud45c':' \uc120\ucd9c'); el('v-name').style.display='none'; el('v-guide').textContent='\ud6c4\ubcf4\ub97c \uc120\ud0dd\ud558\uace0 \ud22c\ud45c \ubc84\ud2bc\uc744 \ub204\ub974\uc138\uc694'; }
+  el('v-err').textContent='';
+  var area=el('v-cands'); area.innerHTML='';
+  var ca=gc(r,st);
+  for(var i=0;i<ca.length;i++){
+    (function(name){
+      var btn=document.createElement('button'); btn.className='cand'; btn.textContent=name;
+      btn.onclick=function(){ chosen=name; var bs=area.querySelectorAll('.cand'); for(var j=0;j<bs.length;j++) bs[j].classList.toggle('sel',bs[j].textContent===name); };
+      area.appendChild(btn);
+    })(ca[i]);
+  }
+  show('s-vote');
+}
+function submitVote(){
+  if(!chosen){el('v-err').textContent='\ud56d\ubaa9\uc744 \uc120\ud0dd\ud574\uc8fc\uc138\uc694.'; return;}
+  var pickedVal = chosen;
+  el('v-err').textContent='';
+  var btns = document.querySelectorAll('#v-cands .cand, .btn-navy');
+  jget('state').then(function(st){
+    if(!st||st.phase!=='open'){el('v-err').textContent='\ud22c\ud45c\uac00 \ub9c8\uac10\ub418\uc5c8\uc2b5\ub2c8\ub2e4.'; return;}
+    var r=ROUNDS[st.round], rv=st.revote||0;
+    var vkey = vk(r.id,rv);
+    jget('votes/'+vkey+'/'+myUID).then(function(v){
+      if(v){ _hasVotedCache[vkey]=true; votedScreen(st.round,r.title,rv,'\uc774\ubbf8 \ud22c\ud45c\ud558\uc168\uc2b5\ub2c8\ub2e4.',true); return;}
+      jput('votes/'+vkey+'/'+myUID, pickedVal).then(function(){
+        chosen=null;
+        _hasVotedCache[vkey]=true;
+        votedScreen(st.round,r.title,rv,'\ud22c\ud45c \uc644\ub8cc. \uac1c\ud45c\ub97c \uae30\ub2e4\ub9ac\ub294 \uc911...',true);
+      }).catch(function(err){ el('v-err').textContent='\uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4: ' + err.message; });
+    }).catch(function(err){ el('v-err').textContent='\ud655\uc778 \uc624\ub958: ' + err.message; });
+  }).catch(function(err){ el('v-err').textContent='\uc5f0\uacb0 \uc624\ub958: ' + err.message; });
+}
+
+function goAdmin(){ show('s-admin'); }
+function exitAdmin(){ isAdmin=false; show('s-enter'); }
+function adminLogin(){
+  if(el('adm-pw').value!==PW){el('adm-err').textContent='\ube44\ubc00\ubc88\ud638\uac00 \ud2c0\ub838\uc2b5\ub2c8\ub2e4.'; return;}
+  isAdmin=true; el('adm-login').style.display='none'; el('adm-panel').style.display='block';
+  el('adm-rtitle').textContent='Loading...';
+  jget('state').then(function(st){
+    if(!st) return jput('state', {round:0,phase:'waiting',revote:0,tied:null,winners:[]});
+  }).then(function(){
+    if(pollTimer) clearInterval(pollTimer);
+    pollTimer = setInterval(function(){ if(isAdmin) pollAdmin(); }, 800);
+    pollAdmin();
+  }).catch(function(err){
+    el('adm-rtitle').textContent = 'ERROR: ' + err.message;
+    el('adm-rinfo').textContent = 'Firebase REST API connection failed. Check database rules and URL.';
+  });
+}
+var _aBusy=false;
+function pollAdmin(){
+  if(_aBusy) return; _aBusy=true;
+  jget('state').then(function(st){
+    _aBusy=false;
+    if(isAdmin && st) aHandleState(st);
+    else if(isAdmin && !st) { el('adm-rtitle').textContent='No state data in DB'; }
+  }).catch(function(err){
+    _aBusy=false;
+    if(isAdmin){
+      el('adm-rtitle').textContent = 'FETCH ERROR: ' + err.message;
+      el('adm-rinfo').textContent = 'URL: ' + DB;
+    }
+  });
+}
+var _lastAdminSig = null;
+function aHandleState(st){
+  if(!st) return;
+  seq++;
+  var mySeq = seq;
+  if(st.round >= ROUNDS.length && st.phase!=='done'){
+    jpatch('state', {phase:'done'});
+  }
+  var round=st.round, phase=st.phase, rv=st.revote||0, r=ROUNDS[round]||{c:[],id:null,title:'-'};
+  var sig = round+'|'+phase+'|'+rv;
+  var sigChanged = (sig !== _lastAdminSig);
+  if(sigChanged){
+    _lastAdminSig = sig;
+    var tm={waiting:['\ub300\uae30\uc911','tw'],open:['\ud22c\ud45c\uc911','to'],closed:['\uac1c\ud45c\uc911','tc'],results:['\uacb0\uacfc\uacf5\uac1c','tr'],done:['\uc644\ub8cc','td2']};
+    var tc=tm[phase]||[phase,'tw'];
+    var stag=el('adm-stag'); stag.textContent=tc[0]; stag.className='stag '+tc[1];
+    el('adm-rtitle').textContent='['+(round+1)+'/'+ROUNDS.length+'] '+(r.title||'');
+    el('adm-rinfo').textContent=(r.single)?'\ub2e8\uc77c\ud6c4\ubcf4: '+(r.name||''):'\ud6c4\ubcf4: '+gc(r,st).join(' vs ');
+    var rvi=el('adm-rvinfo');
+    if(rv>0){rvi.textContent='\uc7ac\ud22c\ud45c '+rv+'\ucc28'; rvi.style.display='block';} else {rvi.style.display='none';}
+    var btns=['btn-open','btn-close','btn-reveal','btn-display','btn-revote','btn-reject-revote','btn-next','btn-end','btn-reset'];
+    for(var i=0;i<btns.length;i++) el(btns[i]).style.display='none';
+    if(phase==='waiting'){vis('btn-open',true); vis('btn-reset',true);}
+    if(phase==='open') vis('btn-close',true);
+    if(phase==='closed'){vis('btn-reveal',true); vis('btn-display',true);}
+    if(phase==='results'){vis('btn-display',true);}
+    if(phase==='done') vis('btn-reset',true);
+    if(!(r.id && (phase==='open'||phase==='closed'||phase==='results'))){
+      el('adm-live').innerHTML=''; el('adm-chart').style.display='none';
+    }
+  }
+  if(r.id && (phase==='open'||phase==='closed'||phase==='results')){
+    jget('votes/'+vk(r.id,rv)).then(function(votes){
+      if(isAdmin && mySeq===seq) aUpdateCounts(st, votes||{});
+    });
+  }
+}
+var _lastCountSig=null;
+function aUpdateCounts(st, votes){
+  var r=ROUNDS[st.round]; var phase=st.phase;
+  var d=calcV(r,st,votes);
+  var csig = st.round+'|'+phase+'|'+(st.revote||0)+'|'+JSON.stringify(d.sorted);
+  if(csig===_lastCountSig) return;
+  _lastCountSig = csig;
+  el('adm-live').innerHTML='<div class="live-row" style="font-weight:bold;">\ud604\uc7ac \ud22c\ud45c\uc218 <b>'+d.total+'\ud45c</b></div>';
+  for(var i=0;i<d.sorted.length;i++) el('adm-live').innerHTML+='<div class="live-row">'+d.sorted[i][0]+'<b>'+d.sorted[i][1]+'\ud45c</b></div>';
+  if(phase==='closed'||phase==='results'){
+    el('adm-chart').style.display='block';
+    aPie(d.sorted, d.total);
+    aLeg(d.sorted, d.total);
+    el('adm-wtext').textContent='\u2192 '+winTxt(r,d,st);
+    el('adm-tie').style.display=d.tie?'block':'none';
+    if(phase==='results'){
+      var rv=st.revote||0;
+      var isRejected = r.single && !d.tie && winTxt(r,d,st)==='\ubd80\uacb0';
+      vis('btn-revote', d.tie);
+      vis('btn-reject-revote', isRejected);
+      if(st.round < ROUNDS.length-1) vis('btn-next', true); else vis('btn-end', true);
+    }
+  } else { el('adm-chart').style.display='none'; }
+}
+function aPie(sorted,total){
+  var cvs=el('adm-pie'); cvs.width=190; cvs.height=190;
+  var ctx=cvs.getContext('2d'),cx=95,cy=95,rad=79,start=-Math.PI/2;
+  for(var i=0;i<sorted.length;i++){
+    var cnt=sorted[i][1]; var slice=total>0?(cnt/total)*Math.PI*2:Math.PI*2/sorted.length;
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,rad,start,start+slice);
+    ctx.fillStyle=COLORS[i%COLORS.length];ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=3;ctx.stroke();
+    if(total>0&&cnt>0){var mid=start+slice/2;ctx.fillStyle='#fff';ctx.font='bold 13px Malgun Gothic,Arial,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(Math.round(cnt/total*100)+'%',cx+Math.cos(mid)*rad*0.65,cy+Math.sin(mid)*rad*0.65);}
+    start+=slice;
+  }
+}
+function aLeg(sorted,total){
+  var e=el('adm-leg'); e.innerHTML='';
+  for(var i=0;i<sorted.length;i++){var pct=total>0?Math.round(sorted[i][1]/total*100):0; e.innerHTML+='<div class="leg-item"><div class="leg-dot" style="background:'+COLORS[i%COLORS.length]+'"></div><span>'+sorted[i][0]+' '+sorted[i][1]+'\ud45c</span><span class="leg-pct">'+pct+'%</span></div>';}
+}
+function aErr(err){ inAction=false; lockBtns(false); alert('\uc624\ub958 \ubc1c\uc0dd: ' + err.message + '\n\nURL: ' + DB); }
+function aGuard(fn){
+  if(inAction) return;
+  inAction = true;
+  lockBtns(true);
+  fn();
+}
+function aDone(){ inAction=false; lockBtns(false); }
+function aOpen()  { aGuard(function(){ jpatch('state', {phase:'open'}).then(function(){ aDone(); _aBusy=false; pollAdmin(); }).catch(aErr); }); }
+function aClose() { aGuard(function(){ jpatch('state', {phase:'closed'}).then(function(){ aDone(); _aBusy=false; pollAdmin(); }).catch(aErr); }); }
+function aReveal(){ aGuard(function(){ jpatch('state', {phase:'results'}).then(function(){ aDone(); _aBusy=false; pollAdmin(); safeOpenBeam(); }).catch(aErr); }); }
+function aRevote(){
+  aGuard(function(){
+    jget('state').then(function(st){
+      var r=ROUNDS[st.round];
+      return jget('votes/'+vk(r.id,st.revote||0)).then(function(votes){
+        var d=calcV(r,st,votes||{});
+        var max=d.sorted[0][1];
+        var tied=d.sorted.filter(function(e){return e[1]===max;}).map(function(e){return e[0];});
+        return jpatch('state', {phase:'waiting', revote:(st.revote||0)+1, tied:(r.single?null:tied), revoteType:'tie'});
+      });
+    }).then(function(){ aDone(); _aBusy=false; pollAdmin(); }).catch(aErr);
+  });
+}
+function aRejectRevote(){
+  aGuard(function(){
+    jget('state').then(function(st){
+      return jpatch('state', {phase:'waiting', revote:(st.revote||0)+1, tied:null, revoteType:'reject'});
+    }).then(function(){ aDone(); _aBusy=false; pollAdmin(); }).catch(aErr);
+  });
+}
+function aNext(){
+  aGuard(function(){
+    jget('state').then(function(st){
+      var r=ROUNDS[st.round];
+      return jget('votes/'+vk(r.id,st.revote||0)).then(function(votes){
+        var d=calcV(r,st,votes||{}); var w=finalTxt(r,d,st);
+        var winners=(st.winners||[]).concat([{title:r.title,winner:w}]);
+        var nextRound = st.round+1;
+        if(nextRound >= ROUNDS.length){
+          return jpatch('state', {phase:'done', winners:winners});
+        }
+        return jput('state', {round:nextRound,phase:'waiting',revote:0,tied:null,revoteType:null,winners:winners});
+      });
+    }).then(function(){ aDone(); _aBusy=false; pollAdmin(); }).catch(aErr);
+  });
+}
+function aEnd(){
+  aGuard(function(){
+    jget('state').then(function(st){
+      var r=ROUNDS[st.round];
+      return jget('votes/'+vk(r.id,st.revote||0)).then(function(votes){
+        var d=calcV(r,st,votes||{}); var w=finalTxt(r,d,st);
+        var winners=(st.winners||[]).concat([{title:r.title,winner:w}]);
+        return jpatch('state', {phase:'done', winners:winners});
+      });
+    }).then(function(){ aDone(); _aBusy=false; pollAdmin(); }).catch(aErr);
+  });
+}
+function aReset(){
+  if(!confirm('\ubaa8\ub4e0 \ub370\uc774\ud130\ub97c \ucd08\uae30\ud654\ud558\uace0 \ucc98\uc74c\ubd80\ud130 \ub2e4\uc2dc \uc2dc\uc791\ud558\uc2dc\uaca0\uc2b5\ub2c8\uae4c?')) return;
+  aGuard(function(){
+    jdel('votes').then(function(){
+      return jput('state', {round:0,phase:'waiting',revote:0,tied:null,winners:[]});
+    }).then(function(){ aDone(); _aBusy=false; pollAdmin(); }).catch(aErr);
+  });
+  if(beamWin&&!beamWin.closed) beamWin.close(); beamWin=null;
+  _lastAdminSig = null; _lastCountSig = null;
+}
+
+function openBeam(){
+  var tpl = el('btpl').value;
+  tpl = tpl.replace('__ROUNDS__', JSON.stringify(ROUNDS));
+  tpl = tpl.replace('__DBURL__', DB);
+  if(!beamWin||beamWin.closed){
+    beamWin=window.open('','vote_beam','width=1280,height=800,menubar=no,toolbar=no,location=no,scrollbars=yes');
+  }
+  if(!beamWin){alert('\ud31d\uc5c5\uc774 \ucc28\ub2e8\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \ube0c\ub77c\uc6b0\uc800\uc5d0\uc11c \ud31d\uc5c5\uc744 \ud5c8\uc6a9\ud574\uc8fc\uc138\uc694.'); return;}
+  beamWin.document.open();
+  beamWin.document.write(tpl);
+  beamWin.document.close();
+}
+function safeOpenBeam(){
+  try{ openBeam(); }catch(e){ /* \ube54\ud654\uba74 \uc5f4\uae30 \uc2e4\ud328\ub294 \uc804\uccb4 \ud750\ub984\uc744 \uba48\ucda0 \uc218 \uc5c6\uc74c */ }
+}
+</script>
+</body>
+</html>
